@@ -1,0 +1,21 @@
+With guidance from the great Jeff Larson of ProPublica, these bounding boxes were extracted from the U.S. Census Bureau's 2010 set of shapefiles for American counties.
+
+They were processed using Postgres' GIS, aka PostGIS. 
+
+On the import, you need to specify LATIN1 as the language.
+
+This code kicked out something that could be exported as a CSV:
+drop table if exists exportthis;
+create table exportthis as
+select
+statefp10,
+countyfp10,
+countyns10,
+geoid10,
+name10,
+namelsad10,
+st_astext(st_expand(the_geom,0)) as boundingbox
+from tl_2010_us_county10
+order by statefp10, countyfp10;
+
+The bounding.py file here did some more processing to turn the bounding box into something more easily used and parsed.
